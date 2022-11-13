@@ -5,33 +5,22 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import fuzzysort from "fuzzysort";
 import type { SpotifyData } from "../utils/dataHandler";
 
-// const people = [
-//   { id: 1, name: "Wade Cooper" },
-//   { id: 2, name: "Arlene Mccoy" },
-//   { id: 3, name: "Devon Webb" },
-//   { id: 4, name: "Tom Cook" },
-//   { id: 5, name: "Tanya Fox" },
-//   { id: 6, name: "Hellen Schmidt" },
-// ];
-
 interface IProps {
   data: SpotifyData[];
-  selected: SpotifyData[];
-  setSelected: Dispatch<SetStateAction<SpotifyData[]>>;
+  selected: SpotifyData | null;
+  setSelected: Dispatch<SetStateAction<SpotifyData | null>>;
 }
 
 const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
-  console.log("selected:", selected);
   const [query, setQuery] = useState("");
-  const filteredData =
-    data != null
-      ? fuzzysort.go(query, data, {
-          threshold: -10000,
-          limit: 10,
-          all: true,
-          key: "track_name",
-        })
-      : [];
+  const filteredData = fuzzysort
+    .go(query, data, {
+      threshold: -10,
+      limit: 10,
+      // all: true,
+      key: "track_name",
+    })
+    .map((d) => d.obj);
 
   return (
     <Combobox value={selected} onChange={setSelected}>
@@ -62,45 +51,49 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                 Nothing found.
               </div>
             ) : (
-              filteredData.map((res) => {
-                const data = res.obj;
-                return (
-                  <Combobox.Option
-                    key={data.id}
-                    className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-teal-600 text-white" : "text-gray-900"
-                      }`
-                    }
-                    value={data}
-                  >
-                    {({ selected, active }) => (
-                      <>
-                        <span
-                          className={`block truncate ${
-                            selected ? "font-semibold" : "font-normal"
-                          }`}
-                        >
-                          {data.track_name}{" "}
-                          <p className="font-light">
-                            Artist: {data.artists.join(", ")}
-                          </p>
-                          <p className="font-light">Score: {res.score}</p>
-                        </span>
-                        {selected ? (
+              filteredData
+                .sort((a, b) => b.popularity - a.popularity)
+                .map((data) => {
+                  return (
+                    <Combobox.Option
+                      key={data.id}
+                      className={({ active }) =>
+                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          active ? "bg-teal-600 text-white" : "text-gray-900"
+                        }`
+                      }
+                      value={data}
+                    >
+                      {({ selected, active }) => (
+                        <>
                           <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active ? "text-white" : "text-teal-600"
+                            className={`block truncate ${
+                              selected ? "font-semibold" : "font-normal"
                             }`}
                           >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            {data.track_name}{" "}
+                            <p className="font-light">
+                              Artist: {data.artists.join(", ")}
+                            </p>
+                            {/* <p className="font-light">Score: {res.score}</p> */}
                           </span>
-                        ) : null}
-                      </>
-                    )}
-                  </Combobox.Option>
-                );
-              })
+                          {selected ? (
+                            <span
+                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                active ? "text-white" : "text-teal-600"
+                              }`}
+                            >
+                              <CheckIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </Combobox.Option>
+                  );
+                })
             )}
           </Combobox.Options>
         </Transition>

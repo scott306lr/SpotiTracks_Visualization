@@ -4,17 +4,20 @@ import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
+import type { SpotifyData } from "../utils/dataHandler";
 import { getSpotifyDataFn } from "../utils/dataHandler";
 
+import type { Collection } from "../components/SpotifyRadar";
 import MyCombobox from "../components/MyCombobox";
-// import type { Collection } from "../components/SpotifyRadar";
 import SpotifyRadar from "../components/SpotifyRadar";
-import type { SpotifyData } from "../utils/dataHandler";
 import Modal from "../components/Modal";
+import DataInfo from "../components/DataInfo";
 
-// TODO: User can select basic types to compare, or make custom settings
-// TODO: Custom settings: search artists, songs, albumns, genres, etc.
-// TODO: A disclosure showing the data for the selected song (compared data)
+// Graph 1: Radar Chart Group Comparsion
+//    User can select groups of songs to compare, by searching or through filtering
+//    Searching: User can search for songs, artists, albums.
+//    Filtering: User can filter by genre, popularity, key, etc.
+
 // TODO: Think of a way to show the data in a more interesting way
 
 const Part1: React.FC = () => {
@@ -22,9 +25,9 @@ const Part1: React.FC = () => {
     ["hw3"],
     getSpotifyDataFn("http://vis.lab.djosix.com:2020/data/spotify_tracks.csv")
   );
-  const [selected, setSelected] = useState<SpotifyData[]>([]);
+  const [selected, setSelected] = useState<SpotifyData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  // const [collections, setCollections] = useState<Collection[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
 
   const avg = rawData != null ? rawData : [];
   const popular5 =
@@ -46,6 +49,7 @@ const Part1: React.FC = () => {
       data: popular50,
     },
   ];
+  // setCollections(myCollections);
 
   return (
     <div className="flex w-full items-center py-2">
@@ -60,18 +64,17 @@ const Part1: React.FC = () => {
             <p>Loading...</p>
           ) : (
             <>
-              <div className="flex w-64 flex-col items-center justify-center">
+              <div className="flex w-full flex-col items-center justify-center">
                 <MyCombobox
                   data={rawData}
                   selected={selected}
                   setSelected={setSelected}
                 />
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Doloribus eveniet omnis repellat nemo eum hic temporibus
-                  voluptatibus deleniti accusantium! Soluta, atque error fuga
-                  laborum tempore explicabo nobis delectus? Voluptates, dolores.
-                </p>
+                {selected != null ? (
+                  <DataInfo data={selected} />
+                ) : (
+                  <p>Nothing Selected</p>
+                )}
               </div>
             </>
           )}

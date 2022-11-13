@@ -64,7 +64,7 @@ export const getSpotifyDataFn = (url: string) => {
       );
     // console.log("fetched!");
     // console.log(response.splice(0, 10));
-    return response as SpotifyData[]; //.splice(0, 1000) as SpotifyData[];
+    return response as SpotifyData[];
   };
 
   return queryFn;
