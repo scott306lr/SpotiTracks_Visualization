@@ -1,5 +1,11 @@
 import Papa from "papaparse";
 
+export type Collection = {
+  name: string;
+  data: SpotifyData[];
+  color: number[];
+};
+
 // typescript type for Spotify Music Data
 export type SpotifyData = {
   id: string;
@@ -45,7 +51,7 @@ export const getSpotifyDataFn = (url: string) => {
             track_name: row.track_name as string,
             track_genre: row.track_genre as string,
             popularity: +row.popularity,
-            duration_ms: +row.duration_ms,
+            duration_s: +row.duration_ms / 1000,
             explicit: row.explicit === "true",
             key: ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"][+row.key] as string,
             mode: ["major", "minor"][+row.mode] as string,
@@ -63,7 +69,7 @@ export const getSpotifyDataFn = (url: string) => {
         })
       );
     // console.log("fetched!");
-    // console.log(response.splice(0, 10));
+    // console.log(response.slice(0, 10));
     return response as SpotifyData[];
   };
 

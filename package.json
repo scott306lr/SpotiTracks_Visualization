@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
+    "@sgratzl/chartjs-chart-boxplot": "^3.10.0",
     "@tanstack/react-query": "^4.15.0",
     "chart.js": "^3.9.1",
     "fuzzysort": "^2.0.3",

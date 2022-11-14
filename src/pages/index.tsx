@@ -7,11 +7,13 @@ import { useState } from "react";
 import type { SpotifyData } from "../utils/dataHandler";
 import { getSpotifyDataFn } from "../utils/dataHandler";
 
-import type { Collection } from "../components/SpotifyRadar";
+import type { Collection } from "../utils/dataHandler";
 import MyCombobox from "../components/MyCombobox";
 import SpotifyRadar from "../components/SpotifyRadar";
 import Modal from "../components/Modal";
 import DataInfo from "../components/DataInfo";
+import SpotifyViolin from "../components/SpotifyViolin";
+import MyTabs from "../components/MyTabs";
 
 // Graph 1: Radar Chart Group Comparsion
 //    User can select groups of songs to compare, by searching or through filtering
@@ -19,6 +21,9 @@ import DataInfo from "../components/DataInfo";
 //    Filtering: User can filter by genre, popularity, key, etc.
 
 // TODO: Think of a way to show the data in a more interesting way
+
+// TODO: Share interactive legends between graphs
+// TODO: Add/Remove Groups of songs to compare
 
 const Part1: React.FC = () => {
   const { data: rawData, isLoading } = useQuery(
@@ -39,14 +44,17 @@ const Part1: React.FC = () => {
     {
       name: "Average of All Songs",
       data: avg,
+      color: [200, 151, 130],
     },
     {
       name: "Popular 5",
       data: popular5,
+      color: [150, 171, 120],
     },
     {
       name: "Popular 50",
       data: popular50,
+      color: [160, 111, 170],
     },
   ];
   // setCollections(myCollections);
@@ -54,31 +62,40 @@ const Part1: React.FC = () => {
   return (
     <div className="flex w-full items-center py-2">
       {/* <h1 className="w-full text-3xl">Spotify Dataset</h1> */}
-      <div className="flex w-1/2 flex-col items-center justify-center py-2">
-        <SpotifyRadar input={myCollections} />
-      </div>
-      <div className="flex w-1/2 flex-col items-center justify-center py-2">
-        <button onClick={() => setModalOpen(true)}>Open Modal</button>
-        <Modal isOpen={modalOpen} setIsOpen={setModalOpen} title={"Add"}>
-          {isLoading || rawData == null ? (
-            <p>Loading...</p>
-          ) : (
-            <>
-              <div className="flex w-full flex-col items-center justify-center">
-                <MyCombobox
-                  data={rawData}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                {selected != null ? (
-                  <DataInfo data={selected} />
-                ) : (
-                  <p>Nothing Selected</p>
-                )}
-              </div>
-            </>
-          )}
-        </Modal>
+      <div className="flex w-full flex-col">
+        <div className="flex w-full justify-center">
+          <section className="flex w-7/12 flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
+            <MyTabs input={myCollections} />
+          </section>
+          <section className="flex w-5/12 flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
+            <div className="rounded-lg bg-white p-5 ">
+              <SpotifyRadar input={myCollections} />
+            </div>
+          </section>
+        </div>
+        <section className="flex w-full flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
+          <button onClick={() => setModalOpen(true)}>Open Modal</button>
+          <Modal isOpen={modalOpen} setIsOpen={setModalOpen} title={"Add"}>
+            {isLoading || rawData == null ? (
+              <p>Loading...</p>
+            ) : (
+              <>
+                <div className="flex w-full flex-col items-center justify-center">
+                  <MyCombobox
+                    data={rawData}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                  {selected != null ? (
+                    <DataInfo data={selected} />
+                  ) : (
+                    <p>Nothing Selected</p>
+                  )}
+                </div>
+              </>
+            )}
+          </Modal>
+        </section>
       </div>
     </div>
   );
@@ -94,9 +111,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
-        <section className="flex w-full flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
-          <Part1 />
-        </section>
+        <Part1 />
       </main>
     </div>
   );
@@ -130,3 +145,13 @@ export default Home;
 //     </section>
 //   );
 // };
+
+//<div className="flex w-1/2 flex-col items-center justify-center py-2">
+//  <div className="flex w-5/6 flex-col items-center justify-center py-2">
+//    {/* <SpotifyViolin input={myCollections} /> */}
+//   <MyTabs input={myCollections} />
+//  </div>
+// <div className="flex w-4/6 flex-col items-center justify-center rounded-lg bg-white py-2">
+//    <SpotifyRadar input={myCollections} />
+//  </div>
+//</div>;

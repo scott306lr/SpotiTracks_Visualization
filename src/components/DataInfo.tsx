@@ -10,7 +10,7 @@ const DataInfo: React.FC<{ data: SpotifyData }> = ({ data }) => {
           <p>track: {data.track_name}</p>
           <p>artist: {data.artists?.join(", ")}</p>
           <p>popularity: {data.popularity}</p>
-          <p>duration_s: {data.duration_ms / 1000}</p>
+          <p>duration_s: {data.duration_s}</p>
           <p>explicit: {data.explicit}</p>
           <p>key: {data.key}</p>
           <p>mode: {data.mode}</p>

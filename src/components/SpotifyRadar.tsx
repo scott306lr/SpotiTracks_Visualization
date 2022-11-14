@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
 import type { SpotifyData } from "../utils/dataHandler";
+import type { Collection } from "../utils/dataHandler";
 
 ChartJS.register(
   RadialLinearScale,
@@ -18,11 +19,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-export type Collection = {
-  name: string;
-  data: SpotifyData[];
-};
 
 const options = {
   plugins: {
@@ -66,6 +62,7 @@ const options = {
       tension: 0.2,
     },
   },
+  maintainAspectRation: false,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
@@ -105,15 +102,17 @@ const SpotifyRadar: React.FC<{ input: Collection[] | undefined }> = ({
             return {
               label: collection.name,
               data: calcAvg(collection.data),
-              backgroundColor: `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`,
-              borderColor: `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`,
+              backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
+              borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
               borderWidth: 1,
             };
           })
         : [],
   };
 
-  return <Radar data={radarShow} options={options}></Radar>;
+  return (
+    <Radar height={50} width={50} data={radarShow} options={options}></Radar>
+  );
 };
 
 export default SpotifyRadar;
