@@ -1,9 +1,10 @@
 import Papa from "papaparse";
 
 export type Collection = {
+  id: number;
   name: string;
   data: SpotifyData[];
-  color: number[];
+  color: [number, number, number];
 };
 
 // typescript type for Spotify Music Data
@@ -14,7 +15,7 @@ export type SpotifyData = {
   album_name: string;
   track_name: string;
   popularity: number;
-  duration_ms: number;
+  duration_s: number;
   explicit: boolean;
   danceability: number;
   energy: number;

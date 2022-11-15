@@ -14,7 +14,6 @@ import {
   Violin,
   BoxAndWiskers,
 } from "@sgratzl/chartjs-chart-boxplot";
-import type { SpotifyData } from "../utils/dataHandler";
 import type { Collection } from "../utils/dataHandler";
 
 // register controller in chart.js and ensure the defaults are set
@@ -34,7 +33,7 @@ ChartJS.register(
 const options = {
   plugins: {
     legend: {
-      display: false,
+      // display: false,
       position: "bottom",
       align: "start",
       labels: {
@@ -100,8 +99,8 @@ const SpotifyViolin: React.FC<{
       input != null
         ? input.map((collection) => {
             return {
-              label: collection.name,
-              data: [collection.data.slice(0, 2000).map((data) => data[label])],
+              label: `${collection.name} (${collection.data.length})`,
+              data: [collection.data.map((data) => data[label])],
               // labels.map((label) =>
               //   collection.data.slice(0, 2000).map((data) => data[label])
               // ),

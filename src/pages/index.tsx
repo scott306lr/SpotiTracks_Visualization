@@ -2,18 +2,16 @@ import { type NextPage } from "next";
 import Head from "next/head";
 // import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { SpotifyData } from "../utils/dataHandler";
 import { getSpotifyDataFn } from "../utils/dataHandler";
 
 import type { Collection } from "../utils/dataHandler";
-import MyCombobox from "../components/MyCombobox";
 import SpotifyRadar from "../components/SpotifyRadar";
 import Modal from "../components/Modal";
-import DataInfo from "../components/DataInfo";
-import SpotifyViolin from "../components/SpotifyViolin";
 import MyTabs from "../components/MyTabs";
+import DataPicker from "../components/DataPicker";
 
 // Graph 1: Radar Chart Group Comparsion
 //    User can select groups of songs to compare, by searching or through filtering
@@ -23,41 +21,60 @@ import MyTabs from "../components/MyTabs";
 // TODO: Think of a way to show the data in a more interesting way
 
 // TODO: Share interactive legends between graphs
-// TODO: Add/Remove Groups of songs to compare
+// TODO: Bar Chart, Pie Chart...
 
 const Part1: React.FC = () => {
   const { data: rawData, isLoading } = useQuery(
     ["hw3"],
     getSpotifyDataFn("http://vis.lab.djosix.com:2020/data/spotify_tracks.csv")
   );
-  const [selected, setSelected] = useState<SpotifyData | null>(null);
+  // const [selected, setSelected] = useState<SpotifyData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const addCollection = (
+    d: SpotifyData[],
+    name: string,
+    color: [number, number, number] | undefined,
+    id: number | undefined
+  ) => {
+    const collection = {
+      id: id,
+      name: name,
+      data: d,
+      color: color,
+    };
+    setCollections((prev) => {
+      const id = collection.id ?? (prev.at(-1)?.id ?? -1) + 1;
+      const name =
+        collection.name === "" ? `Collection_${id}` : collection.name;
+      const color = collection.color ?? [
+        Math.random() * 255,
+        Math.random() * 255,
+        Math.random() * 255,
+      ];
+      return [
+        ...prev,
+        {
+          ...collection,
+          id: id,
+          name: name,
+          color: color,
+        },
+      ];
+    });
+  };
 
-  const avg = rawData != null ? rawData : [];
-  const popular5 =
-    rawData != null ? rawData.filter((d) => d.popularity > 95) : [];
-  const popular50 =
-    rawData != null ? rawData.filter((d) => d.popularity > 50) : [];
+  useEffect(() => {
+    if (rawData == null) return;
 
-  const myCollections = [
-    {
-      name: "Average of All Songs",
-      data: avg,
-      color: [200, 151, 130],
-    },
-    {
-      name: "Popular 5",
-      data: popular5,
-      color: [150, 171, 120],
-    },
-    {
-      name: "Popular 50",
-      data: popular50,
-      color: [160, 111, 170],
-    },
-  ];
-  // setCollections(myCollections);
+    const avg = rawData;
+    const popularg25 = rawData.filter((d) => d.popularity >= 50);
+    const popularl25 = rawData.filter((d) => d.popularity <= 17);
+    addCollection(avg, "Average of All Tracks", undefined, undefined);
+    addCollection(popularg25, "Popular Top 25%", undefined, undefined);
+    addCollection(popularl25, "Popular Low 25%", undefined, undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawData]);
 
   return (
     <div className="flex w-full items-center py-2">
@@ -65,11 +82,11 @@ const Part1: React.FC = () => {
       <div className="flex w-full flex-col">
         <div className="flex w-full justify-center">
           <section className="flex w-7/12 flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
-            <MyTabs input={myCollections} />
+            <MyTabs input={collections} />
           </section>
           <section className="flex w-5/12 flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
             <div className="rounded-lg bg-white p-5 ">
-              <SpotifyRadar input={myCollections} />
+              <SpotifyRadar input={collections} />
             </div>
           </section>
         </div>
@@ -81,16 +98,12 @@ const Part1: React.FC = () => {
             ) : (
               <>
                 <div className="flex w-full flex-col items-center justify-center">
-                  <MyCombobox
+                  <DataPicker
                     data={rawData}
-                    selected={selected}
-                    setSelected={setSelected}
+                    collections={collections}
+                    setCollections={setCollections}
+                    addCollection={addCollection}
                   />
-                  {selected != null ? (
-                    <DataInfo data={selected} />
-                  ) : (
-                    <p>Nothing Selected</p>
-                  )}
                 </div>
               </>
             )}
@@ -118,40 +131,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-// type TechnologyCardProps = {
-//   name: string;
-//   description: string;
-//   documentation: string;
-// };
-
-// const TechnologyCard: React.FC<TechnologyCardProps> = ({
-//   name,
-//   description,
-//   documentation,
-// }) => {
-//   return (
-//     <section className="flex flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl duration-500 motion-safe:hover:scale-105">
-//       <h2 className="text-lg text-gray-700">{name}</h2>
-//       <p className="text-sm text-gray-600">{description}</p>
-//       <Link
-//         className="m-auto mt-3 w-fit text-sm text-violet-500 underline decoration-dotted underline-offset-2"
-//         href={documentation}
-//         target="_blank"
-//         rel="noreferrer"
-//       >
-//         Documentation
-//       </Link>
-//     </section>
-//   );
-// };
-
-//<div className="flex w-1/2 flex-col items-center justify-center py-2">
-//  <div className="flex w-5/6 flex-col items-center justify-center py-2">
-//    {/* <SpotifyViolin input={myCollections} /> */}
-//   <MyTabs input={myCollections} />
-//  </div>
-// <div className="flex w-4/6 flex-col items-center justify-center rounded-lg bg-white py-2">
-//    <SpotifyRadar input={myCollections} />
-//  </div>
-//</div>;

@@ -7,8 +7,9 @@ import type { SpotifyData } from "../utils/dataHandler";
 
 interface IProps {
   data: SpotifyData[];
-  selected: SpotifyData | null;
-  setSelected: Dispatch<SetStateAction<SpotifyData | null>>;
+  selected: SpotifyData[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setSelected: Dispatch<SetStateAction<SpotifyData[] | any[]>>;
 }
 
 const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
@@ -17,18 +18,17 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
     .go(query, data, {
       threshold: -10,
       limit: 10,
-      // all: true,
+      all: true,
       key: "track_name",
     })
     .map((d) => d.obj);
 
   return (
-    <Combobox value={selected} onChange={setSelected}>
+    <Combobox value={selected} by="id" onChange={setSelected} multiple>
       <div className="relative mt-1">
         <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
           <Combobox.Input
             className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-            displayValue={(data: SpotifyData) => data?.track_name}
             onChange={(event) => setQuery(event.target.value)}
           />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">

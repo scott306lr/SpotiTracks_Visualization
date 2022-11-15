@@ -69,9 +69,8 @@ const options = {
 const labels = [
   "danceability",
   "energy",
-  // "loudness",
   "speechiness",
-  // "acousticness",
+  "acousticness",
   "liveness",
   "valence",
 ];
@@ -93,14 +92,8 @@ const SpotifyRadar: React.FC<{ input: Collection[] | undefined }> = ({
     datasets:
       input != null
         ? input.map((collection) => {
-            const rgb = [
-              Math.floor(150 + Math.random() * 100),
-              Math.floor(150 + Math.random() * 100),
-              Math.floor(150 + Math.random() * 100),
-            ];
-
             return {
-              label: collection.name,
+              label: `${collection.name} (${collection.data.length})`,
               data: calcAvg(collection.data),
               backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
               borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
