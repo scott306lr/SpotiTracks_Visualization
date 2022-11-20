@@ -8,7 +8,7 @@ const DataInfo: React.FC<{ data: SpotifyData }> = ({ data }) => {
       <div className="flex flex-row">
         <div className="flex w-1/2 flex-col">
           <p>track: {data.track_name}</p>
-          <p>artist: {data.artists?.join(", ")}</p>
+          <p>artist: {data.artists.split(";").join(", ")}</p>
           <p>popularity: {data.popularity}</p>
           <p>duration_s: {data.duration_s}</p>
           <p>explicit: {data.explicit}</p>
@@ -26,6 +26,7 @@ const DataInfo: React.FC<{ data: SpotifyData }> = ({ data }) => {
           <p>speechiness: {data.speechiness}</p>
           <p>valence: {data.valence}</p>
           <p>tempo: {data.tempo}</p>
+          <p>track_genre: {data.track_genre}</p>
         </div>
       </div>
       <div className="flex flex-row">

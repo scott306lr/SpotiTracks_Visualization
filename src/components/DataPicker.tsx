@@ -94,6 +94,7 @@ const DataInfo: React.FC<IProps> = ({
                 setName("");
                 setColor(undefined);
                 setId(undefined);
+                setSelected([]);
               }}
             >
               {editMode ? "Modify" : "Create"}
@@ -104,7 +105,7 @@ const DataInfo: React.FC<IProps> = ({
           <h3 className="text-xl">Collections:</h3>
           <ul className="flex h-64 w-full flex-col overflow-y-scroll">
             {collections.map((d, idx) => (
-              <li key={idx} className="flex  items-center">
+              <li key={idx} className="flex items-center">
                 <HiOutlineTrash
                   className="h-8 w-8 flex-none"
                   onClick={() => {

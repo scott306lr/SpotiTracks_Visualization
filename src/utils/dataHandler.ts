@@ -11,7 +11,7 @@ export type Collection = {
 export type SpotifyData = {
   id: string;
   track_id: string;
-  artists: string[];
+  artists: string;//string[];
   album_name: string;
   track_name: string;
   popularity: number;
@@ -47,13 +47,13 @@ export const getSpotifyDataFn = (url: string) => {
           return {
             id: row[""] as string,
             track_id: row.track_id as string,
-            artists: row.artists.split(";") as string[],
+            artists: row.artists as string,
             album_name: row.album_name as string,
             track_name: row.track_name as string,
             track_genre: row.track_genre as string,
             popularity: +row.popularity,
             duration_s: +row.duration_ms / 1000,
-            explicit: row.explicit === "true",
+            explicit: row.explicit as boolean,
             key: ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"][+row.key] as string,
             mode: ["major", "minor"][+row.mode] as string,
             tempo: +row.tempo,

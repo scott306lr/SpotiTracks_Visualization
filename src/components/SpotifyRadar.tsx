@@ -28,7 +28,7 @@ const options = {
       labels: {
         boxWidth: 30,
         font: {
-          size: 20,
+          size: 16,
         },
       },
     },
@@ -38,7 +38,7 @@ const options = {
     r: {
       pointLabels: {
         font: {
-          size: 24,
+          size: 20,
         },
       },
       ticks: {
@@ -54,25 +54,22 @@ const options = {
   },
 
   elements: {
-    // point: {
-    //   radius: 0,
-    // },
     line: {
       borderWidth: 3,
       tension: 0.2,
     },
   },
-  maintainAspectRation: false,
+  // maintainAspectRation: false,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
 const labels = [
+  "valence",
   "danceability",
   "energy",
-  "speechiness",
   "acousticness",
+  "speechiness",
   "liveness",
-  "valence",
 ];
 
 const SpotifyRadar: React.FC<{ input: Collection[] | undefined }> = ({
@@ -104,7 +101,7 @@ const SpotifyRadar: React.FC<{ input: Collection[] | undefined }> = ({
   };
 
   return (
-    <Radar height={50} width={50} data={radarShow} options={options}></Radar>
+    <Radar height={40} width={40} data={radarShow} options={options}></Radar>
   );
 };
 

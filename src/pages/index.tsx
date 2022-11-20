@@ -10,8 +10,10 @@ import { getSpotifyDataFn } from "../utils/dataHandler";
 import type { Collection } from "../utils/dataHandler";
 import SpotifyRadar from "../components/SpotifyRadar";
 import Modal from "../components/Modal";
-import MyTabs from "../components/MyTabs";
 import DataPicker from "../components/DataPicker";
+import DataList from "../components/DataList";
+import SpotifyViolin from "../components/SpotifyViolin";
+import SpotifyDoughnut from "../components/SpotifyDoughnut";
 
 // Graph 1: Radar Chart Group Comparsion
 //    User can select groups of songs to compare, by searching or through filtering
@@ -48,9 +50,9 @@ const Part1: React.FC = () => {
       const name =
         collection.name === "" ? `Collection_${id}` : collection.name;
       const color = collection.color ?? [
-        Math.random() * 255,
-        Math.random() * 255,
-        Math.random() * 255,
+        Math.round(95 + Math.random() * 160),
+        Math.round(95 + Math.random() * 160),
+        Math.round(95 + Math.random() * 160),
       ];
       return [
         ...prev,
@@ -76,54 +78,83 @@ const Part1: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData]);
 
+  //loading
   return (
-    <div className="flex w-full items-center py-2">
-      {/* <h1 className="w-full text-3xl">Spotify Dataset</h1> */}
-      <div className="flex w-full flex-col">
-        <div className="flex w-full justify-center">
-          <section className="flex w-7/12 flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
-            <MyTabs input={collections} />
-          </section>
-          <section className="flex w-5/12 flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
-            <div className="rounded-lg bg-white p-5 ">
-              <SpotifyRadar input={collections} />
+    <>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <div className="flex w-full items-center py-2">
+            {/* <h1 className="w-full text-3xl">Spotify Dataset</h1> */}
+            <div className="flex w-full flex-col justify-center align-middle">
+              <div className="flex w-full justify-center align-middle">
+                <section className="flex w-5/12 flex-col justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
+                  <div className="flex flex-col items-center space-y-4 rounded-lg bg-white p-5 text-lg">
+                    <DataList collections={collections} />
+                    <button
+                      className="w-full rounded-lg bg-gray-200 p-2"
+                      onClick={() => setModalOpen(true)}
+                    >
+                      Add/Modify
+                    </button>
+                  </div>
+                </section>
+                <section className="flex w-7/12 flex-col items-center justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
+                  <h1 className="text-center text-2xl">Bar/Donut Chart</h1>
+                  <SpotifyDoughnut input={collections} />
+                </section>
+              </div>
+              <div className="flex w-full justify-center">
+                <section className="flex w-7/12 flex-col justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
+                  <h1 className="text-center text-2xl">Violin Chart</h1>
+                  <SpotifyViolin input={collections} />
+                </section>
+
+                <section className="flex w-5/12 flex-col items-center justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
+                  <h1 className="text-center text-2xl">Radar Chart</h1>
+                  <div className="w-full rounded-lg bg-white px-5 py-2">
+                    <SpotifyRadar input={collections} />
+                  </div>
+                </section>
+              </div>
+              {/* <section className="flex w-full flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
+          
+        </section> */}
             </div>
-          </section>
-        </div>
-        <section className="flex w-full flex-col justify-center rounded border-2 border-gray-500 p-6 shadow-xl">
-          <button onClick={() => setModalOpen(true)}>Open Modal</button>
-          <Modal isOpen={modalOpen} setIsOpen={setModalOpen} title={"Add"}>
-            {isLoading || rawData == null ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                <div className="flex w-full flex-col items-center justify-center">
-                  <DataPicker
-                    data={rawData}
-                    collections={collections}
-                    setCollections={setCollections}
-                    addCollection={addCollection}
-                  />
-                </div>
-              </>
-            )}
-          </Modal>
-        </section>
-      </div>
-    </div>
+            <Modal isOpen={modalOpen} setIsOpen={setModalOpen} title={"Add"}>
+              {isLoading || rawData == null ? (
+                <p>Loading...</p>
+              ) : (
+                <>
+                  <div className="flex w-full flex-col items-center justify-center">
+                    <DataPicker
+                      data={rawData}
+                      collections={collections}
+                      setCollections={setCollections}
+                      addCollection={addCollection}
+                    />
+                  </div>
+                </>
+              )}
+            </Modal>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
 const Home: NextPage = () => {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-100">
+    <div className="flex h-full w-full flex-col items-center justify-center bg-slate-100">
       <Head>
-        <title>Create T3 App</title>
-        <meta name="description" content="Generated by create-t3-app" />
-        <link rel="icon" href="./favicon.ico" />
+        <title>Spotify Data Visualization</title>
+        <meta name="description" content="Spotify Data Visualization" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <main className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
+        <h1 className="text-3xl">Spotify Data Visualization</h1>
         <Part1 />
       </main>
     </div>

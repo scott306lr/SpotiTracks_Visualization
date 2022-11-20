@@ -16,6 +16,8 @@ import {
 } from "@sgratzl/chartjs-chart-boxplot";
 import type { Collection } from "../utils/dataHandler";
 
+import { Tab } from "@headlessui/react";
+
 // register controller in chart.js and ensure the defaults are set
 ChartJS.register(
   ViolinController,
@@ -32,8 +34,14 @@ ChartJS.register(
 
 const options = {
   plugins: {
+    title: {
+      display: true,
+      text: "XX Distribution",
+      font: {
+        size: 20,
+      },
+    },
     legend: {
-      // display: false,
       position: "bottom",
       align: "start",
       labels: {
@@ -44,7 +52,7 @@ const options = {
       },
     },
   },
-  // label font size 32
+
   scales: {
     y: {
       ticks: {
@@ -52,10 +60,7 @@ const options = {
         font: {
           size: 20,
         },
-        // stepSize: 0.2,
       },
-      // suggestedMin: 0,
-      // suggestedMax: 1,
     },
     x: {
       ticks: {
@@ -68,9 +73,6 @@ const options = {
   },
 
   elements: {
-    // point: {
-    //   radius: 0,
-    // },
     line: {
       borderWidth: 3,
       tension: 0.2,
@@ -79,17 +81,7 @@ const options = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
-// function randomValues(count: number, min: number, max: number) {
-//   const delta = max - min;
-//   return Array.from({ length: count }).map(() => Math.random() * delta + min);
-// }
-
-// const labels = ["danceability", "energy", "speechiness", "liveness", "valence"];
-// const labels = ["popularity", "duration_s", "tempo"];
-// const labels = ["loudness"];
-// const labels = ["duration_s"];
-
-const SpotifyViolin: React.FC<{
+const ViolinPlot: React.FC<{
   input: Collection[] | undefined;
   label: string;
 }> = ({ input, label }) => {
@@ -101,9 +93,6 @@ const SpotifyViolin: React.FC<{
             return {
               label: `${collection.name} (${collection.data.length})`,
               data: [collection.data.map((data) => data[label])],
-              // labels.map((label) =>
-              //   collection.data.slice(0, 2000).map((data) => data[label])
-              // ),
               backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
               borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
               borderWidth: 1,
@@ -112,14 +101,70 @@ const SpotifyViolin: React.FC<{
         : [],
   };
 
+  const myOptions = {
+    ...options,
+    plugins: {
+      ...options.plugins,
+      title: {
+        ...options.plugins.title,
+        text: `"${
+          label.charAt(0).toUpperCase() + label.slice(1)
+        }" distribution between ${input?.length} collections`,
+      },
+    },
+  };
+
   return (
     <Chart
       // height="100px"
       // width="100px"
       type="violin"
       data={radarShow}
-      options={options}
+      options={myOptions}
     />
   );
 };
+
+const SpotifyViolin: React.FC<{ input: Collection[] | undefined }> = ({
+  input,
+}) => {
+  const labels = ["popularity", "duration_s", "tempo", "loudness"];
+
+  return (
+    <div className="flex w-full flex-col justify-center space-y-1 overflow-hidden">
+      <Tab.Group>
+        <Tab.List className="flex space-x-4 overflow-x-auto rounded-xl bg-blue-900/80 px-2 py-1">
+          {labels.map((label, idx) => (
+            <Tab
+              key={idx}
+              className={({ selected }) =>
+                `w-full rounded-lg py-2.5 px-1 text-lg font-medium leading-5 text-blue-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 
+                ${
+                  selected
+                    ? "bg-white/[0.70] shadow"
+                    : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                }`
+              }
+            >
+              {label}
+            </Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels className="mt-2">
+          {labels.map((label, idx) => (
+            <Tab.Panel
+              key={idx}
+              className={
+                "rounded-xl bg-white p-3 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
+              }
+            >
+              <ViolinPlot input={input} label={label} />
+            </Tab.Panel>
+          ))}
+        </Tab.Panels>
+      </Tab.Group>
+    </div>
+  );
+};
+
 export default SpotifyViolin;
