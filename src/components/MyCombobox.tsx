@@ -1,10 +1,10 @@
 import type { Dispatch, SetStateAction } from "react";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useRef } from "react";
 import { Combobox, Listbox, Transition } from "@headlessui/react";
 import { HiCheck, HiChevronUpDown } from "react-icons/hi2";
-import { MdSearch } from "react-icons/md";
 import fuzzysort from "fuzzysort";
 import type { SpotifyData } from "../utils/dataHandler";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 interface IProps {
   data: SpotifyData[];
@@ -18,12 +18,22 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   const [filterkey, setFilterkey] = useState("track_name");
   const filteredData = fuzzysort
     .go(query, data, {
-      threshold: -10,
-      limit: 10,
+      threshold: -5,
+      // limit: 10,
       all: true,
       key: filterkey,
     })
-    .map((d) => d.obj);
+    .map((d) => d.obj)
+    .sort((a, b) => b.popularity - a.popularity);
+
+  const parentRef = useRef<HTMLUListElement | null>(null);
+  const virtualizer = useVirtualizer({
+    count: filteredData.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 64,
+    overscan: 8,
+    paddingStart: 64,
+  });
 
   return (
     <div className="flex items-center justify-center align-middle">
@@ -36,10 +46,6 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
               onChange={(event) => setQuery(event.target.value)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-              {/* <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              /> */}
               <HiChevronUpDown
                 className="h-5 w-5 text-gray-400"
                 aria-hidden="true"
@@ -53,23 +59,56 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
             leaveTo="opacity-0"
             afterLeave={() => setQuery("")}
           >
-            <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {filteredData.length === 0 && query !== "" ? (
-                <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                  Nothing found.
+            <Combobox.Options
+              className={`absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm
+              `}
+              ref={parentRef}
+            >
+              <div
+                style={{
+                  height: virtualizer.getTotalSize(),
+                  width: "100%",
+                  position: "relative",
+                  backgroundColor: "white",
+                  zIndex: 1,
+                }}
+              >
+                <div
+                  className="relative h-16 cursor-default select-none bg-teal-700/30 py-2 pl-10 pr-4 text-teal-900 hover:bg-teal-700 hover:text-white"
+                  onClick={() => setSelected(filteredData)}
+                >
+                  <span className={`block truncate text-base font-semibold`}>
+                    Select All
+                    <p className="font-light">
+                      {`Select all ${filteredData.length} tracks`}
+                    </p>
+                  </span>
                 </div>
-              ) : (
-                filteredData
-                  .sort((a, b) => b.popularity - a.popularity)
-                  .map((data) => {
+
+                {filteredData.length === 0 && query !== "" ? (
+                  <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                    Nothing found.
+                  </div>
+                ) : (
+                  virtualizer.getVirtualItems().map((virtualRow) => {
+                    const data = filteredData[virtualRow.index] as SpotifyData;
                     return (
                       <Combobox.Option
-                        key={data.id}
+                        key={virtualRow.key}
+                        data-index={virtualRow.index}
+                        ref={virtualizer.measureElement}
                         className={({ active }) =>
                           `relative cursor-default select-none py-2 pl-10 pr-4 ${
                             active ? "bg-teal-600 text-white" : "text-gray-900"
                           }`
                         }
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
                         value={data}
                       >
                         {({ selected, active }) => (
@@ -80,6 +119,9 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                               }`}
                             >
                               {data.track_name}{" "}
+                              <p className="font-light">
+                                Album: {data.album_name}
+                              </p>
                               <p className="font-light">
                                 Artist: {data.artists.split(";").join(", ")}
                               </p>
@@ -102,12 +144,13 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                       </Combobox.Option>
                     );
                   })
-              )}
+                )}
+              </div>
             </Combobox.Options>
           </Transition>
         </div>
       </Combobox>
-      <div className="flex items-center space-x-1 px-2 align-middle">
+      <div className="flex items-center justify-center space-x-1 px-2 align-middle">
         <p>By: </p>
         <MyListbox selected={filterkey} setSelected={setFilterkey} />
       </div>

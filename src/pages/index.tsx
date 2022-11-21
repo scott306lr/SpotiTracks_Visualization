@@ -13,7 +13,7 @@ import Modal from "../components/Modal";
 import DataPicker from "../components/DataPicker";
 import DataList from "../components/DataList";
 import SpotifyViolin from "../components/SpotifyViolin";
-import SpotifyDoughnut from "../components/SpotifyDoughnut";
+import SpotifyBar from "../components/SpotifyBar";
 
 // Graph 1: Radar Chart Group Comparsion
 //    User can select groups of songs to compare, by searching or through filtering
@@ -89,30 +89,37 @@ const Part1: React.FC = () => {
             {/* <h1 className="w-full text-3xl">Spotify Dataset</h1> */}
             <div className="flex w-full flex-col justify-center align-middle">
               <div className="flex w-full justify-center align-middle">
-                <section className="flex w-5/12 flex-col justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
-                  <div className="flex flex-col items-center space-y-4 rounded-lg bg-white p-5 text-lg">
+                <section className="flex w-5/12 flex-col items-center justify-center space-y-2 rounded border-2 border-gray-500 bg-blue-700/30 pb-6 align-middle shadow-xl">
+                  <h1 className="w-3/4 text-center text-3xl">
+                    Manage Collections Here...
+                  </h1>
+                  <div className="flex flex-col items-center space-y-4 rounded-lg border-2 border-black bg-blue-900/80 p-5 text-lg">
                     <DataList collections={collections} />
                     <button
-                      className="w-full rounded-lg bg-gray-200 p-2"
+                      className="w-full rounded-lg bg-white/80 p-2"
                       onClick={() => setModalOpen(true)}
                     >
                       Add/Modify
                     </button>
                   </div>
                 </section>
-                <section className="flex w-7/12 flex-col items-center justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
-                  <h1 className="text-center text-2xl">Bar/Donut Chart</h1>
-                  <SpotifyDoughnut input={collections} />
+                <section className="flex w-7/12 flex-col items-center justify-center space-y-2 rounded border-2 border-gray-500 bg-pink-500/30 p-6 align-middle shadow-xl">
+                  <h1 className="text-center text-3xl">
+                    Single Collection Analysis
+                  </h1>
+                  <SpotifyBar input={collections} />
                 </section>
               </div>
               <div className="flex w-full justify-center">
-                <section className="flex w-7/12 flex-col justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
-                  <h1 className="text-center text-2xl">Violin Chart</h1>
+                <section className="flex w-7/12 flex-col justify-center space-y-2 rounded border-2 border-gray-500 bg-green-700/30 px-4 align-middle shadow-xl">
+                  <h1 className="text-center text-3xl">
+                    Distribution Analysis
+                  </h1>
                   <SpotifyViolin input={collections} />
                 </section>
 
-                <section className="flex w-5/12 flex-col items-center justify-center rounded border-2 border-gray-500 p-6 align-middle shadow-xl">
-                  <h1 className="text-center text-2xl">Radar Chart</h1>
+                <section className="flex w-5/12 flex-col items-center justify-center space-y-2 rounded border-2 border-gray-500 bg-purple-700/30 px-4 py-6 align-middle shadow-xl">
+                  <h1 className="text-center text-3xl"> Radar Score </h1>
                   <div className="w-full rounded-lg bg-white px-5 py-2">
                     <SpotifyRadar input={collections} />
                   </div>

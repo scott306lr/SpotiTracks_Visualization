@@ -22,6 +22,9 @@ ChartJS.register(
 
 const options = {
   plugins: {
+    autocolors: {
+      mode: "dataset",
+    },
     legend: {
       position: "bottom",
       align: "start",
@@ -33,9 +36,17 @@ const options = {
       },
     },
   },
-  // label font size 32
+
+  //darker line
   scales: {
     r: {
+      angleLines: {
+        color: "rgba(0, 0, 0, 0.5)",
+        lineWidth: 2,
+      },
+      grid: {
+        color: "rgba(0, 0, 0, 0.5)",
+      },
       pointLabels: {
         font: {
           size: 20,
@@ -55,10 +66,10 @@ const options = {
 
   elements: {
     line: {
-      borderWidth: 3,
-      tension: 0.2,
+      borderWidth: 1,
     },
   },
+
   // maintainAspectRation: false,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
@@ -92,9 +103,8 @@ const SpotifyRadar: React.FC<{ input: Collection[] | undefined }> = ({
             return {
               label: `${collection.name} (${collection.data.length})`,
               data: calcAvg(collection.data),
-              backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
-              borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
-              borderWidth: 1,
+              // backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
+              // borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
             };
           })
         : [],

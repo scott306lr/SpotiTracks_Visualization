@@ -34,6 +34,9 @@ ChartJS.register(
 
 const options = {
   plugins: {
+    autocolors: {
+      mode: "dataset",
+    },
     title: {
       display: true,
       text: "XX Distribution",
@@ -73,6 +76,9 @@ const options = {
   },
 
   elements: {
+    boxplot: {
+      outlierRadius: 0,
+    },
     line: {
       borderWidth: 3,
       tension: 0.2,
@@ -93,8 +99,6 @@ const ViolinPlot: React.FC<{
             return {
               label: `${collection.name} (${collection.data.length})`,
               data: [collection.data.map((data) => data[label])],
-              backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
-              borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
               borderWidth: 1,
             };
           })

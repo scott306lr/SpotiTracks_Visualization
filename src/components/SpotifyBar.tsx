@@ -11,6 +11,8 @@ import { Bar } from "react-chartjs-2";
 import type { Collection, SpotifyData } from "../utils/dataHandler";
 import { Tab } from "@headlessui/react";
 import { useState } from "react";
+// @ts-ignore
+import autocolors from "chartjs-plugin-autocolors";
 
 ChartJS.register(
   CategoryScale,
@@ -18,12 +20,17 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  autocolors
 );
 
 const options = {
   // maintianAspectRatio: false,
   plugins: {
+    autocolors: {
+      mode: "data",
+      offset: 18,
+    },
     title: {
       display: true,
       text: "Top 10",
@@ -74,23 +81,48 @@ const options = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any;
 
-const DoughnutPlot: React.FC<{
+const MyBarPlot: React.FC<{
   input: Collection;
   label: string;
 }> = ({ input, label }) => {
   const countType = (input: SpotifyData[], toCount: string) => {
     const countDict: { [key: string]: number } = {};
     if (input != null) {
-      input.forEach((track) => {
-        const rawData = track[toCount] as string;
-        if (rawData in countDict) {
-          countDict[rawData] += 1;
-        } else {
-          countDict[rawData] = 1;
-        }
-      });
+      switch (toCount) {
+        case "artists":
+          input.forEach((track) => {
+            const rawDatas = track[toCount].split(";") as string[];
+            for (const data of rawDatas) {
+              if (data in countDict) {
+                countDict[data] += 1;
+              } else {
+                countDict[data] = 1;
+              }
+            }
+          });
+          break;
+        case "key/mode":
+          input.forEach((track) => {
+            const data = track["key"] + " " + track["mode"];
+            if (data in countDict) {
+              countDict[data] += 1;
+            } else {
+              countDict[data] = 1;
+            }
+          });
+          break;
+        default:
+          input.forEach((track) => {
+            const rawData = track[toCount] as string;
+            if (rawData in countDict) {
+              countDict[rawData] += 1;
+            } else {
+              countDict[rawData] = 1;
+            }
+          });
+          break;
+      }
     }
-
     return countDict;
   };
 
@@ -101,13 +133,14 @@ const DoughnutPlot: React.FC<{
   const sortedLabels = sorted.map((entry) => entry[0]);
   const sortedData = sorted.map((entry) => entry[1]);
 
+  const top = 20;
   const top10Labels =
-    sortedLabels.length > 10
-      ? [...sortedLabels.slice(0, 10)] //, "Others"]
-      : sortedLabels.slice(0, 10);
+    sortedLabels.length > top
+      ? [...sortedLabels.slice(0, top)] //, "Others"]
+      : sortedLabels.slice(0, top);
 
   const top10Data = [
-    ...sortedData.slice(0, 10),
+    ...sortedData.slice(0, top),
     //sortedData.slice(10).reduce((a, b) => a + b, 0),
   ];
 
@@ -121,14 +154,6 @@ const DoughnutPlot: React.FC<{
       {
         label: `${input.name} (${input.data.length})`,
         data: top10Data,
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
       },
     ],
   };
@@ -147,14 +172,14 @@ const DoughnutPlot: React.FC<{
   return <Bar data={radarShow} options={myOptions} />;
 };
 
-const SpotifyDoughnut: React.FC<{ input: Collection[] }> = ({ input }) => {
+const SpotifyBar: React.FC<{ input: Collection[] }> = ({ input }) => {
   const [select, setSelect] = useState<string>("track_genre");
   // const bar_labels = ["mode", "key"];
   // const labels = input.map((collection) => collection.name);
 
   // const labels3 = Object.keys(artists);
   // const labels4 = Object.keys(explicit);
-  const labels = ["track_genre", "artists", "explicit", "mode", "key"];
+  const labels = ["track_genre", "artists", "explicit", "key/mode"];
   return (
     <div className="flex w-full flex-col justify-center space-y-1 overflow-hidden">
       <Tab.Group>
@@ -164,7 +189,7 @@ const SpotifyDoughnut: React.FC<{ input: Collection[] }> = ({ input }) => {
               <Tab
                 key={collect.id}
                 className={({ selected }) =>
-                  `w-full min-w-fit rounded-lg py-2.5 px-1 text-base font-medium leading-5 text-gray-500 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 
+                  `w-full min-w-fit rounded-lg py-2.5 px-1 text-lg font-medium leading-5 text-gray-500 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 
                 ${
                   selected
                     ? "bg-white/[0.80] shadow"
@@ -202,7 +227,7 @@ const SpotifyDoughnut: React.FC<{ input: Collection[] }> = ({ input }) => {
               }
             >
               {/* <LabelTab collect={collect} /> */}
-              <DoughnutPlot key={select} input={collect} label={select} />
+              <MyBarPlot key={select} input={collect} label={select} />
             </Tab.Panel>
           ))}
         </Tab.Panels>
@@ -211,4 +236,4 @@ const SpotifyDoughnut: React.FC<{ input: Collection[] }> = ({ input }) => {
   );
 };
 
-export default SpotifyDoughnut;
+export default SpotifyBar;

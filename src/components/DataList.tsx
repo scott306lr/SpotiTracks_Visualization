@@ -1,7 +1,5 @@
 //Todo: Read data and display all the information in a nice way
 
-import type { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
 import type { Collection } from "../utils/dataHandler";
 // let nextID = 0;
 
@@ -12,8 +10,10 @@ interface IProps {
 const DataList: React.FC<IProps> = ({ collections }) => {
   return (
     <div className="flex h-64 w-full flex-col items-center justify-center space-y-2 px-4 align-middle">
-      <h3 className="w-full text-center text-2xl">My Collections</h3>
-      <ul className="flex h-full w-full flex-col overflow-y-scroll rounded-lg px-2">
+      <h3 className="w-full text-center text-3xl text-white/90">
+        Current Collections
+      </h3>
+      <ul className="flex h-full w-full flex-col overflow-y-scroll rounded-lg bg-white p-2 text-xl">
         {collections.map((d, idx) => (
           <li
             key={idx}
