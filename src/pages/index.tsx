@@ -28,7 +28,9 @@ import SpotifyBar from "../components/SpotifyBar";
 const Part1: React.FC = () => {
   const { data: rawData, isLoading } = useQuery(
     ["hw3"],
-    getSpotifyDataFn("http://vis.lab.djosix.com:2020/data/spotify_tracks.csv")
+    getSpotifyDataFn(
+      "https://raw.githubusercontent.com/scott306lr/SpotiTracks_Visualization/master/dataset.csv"
+    ) //"http://vis.lab.djosix.com:2020/data/spotify_tracks.csv")
   );
   // const [selected, setSelected] = useState<SpotifyData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
