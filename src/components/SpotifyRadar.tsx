@@ -22,9 +22,6 @@ ChartJS.register(
 
 const options = {
   plugins: {
-    autocolors: {
-      mode: "dataset",
-    },
     legend: {
       position: "bottom",
       align: "start",
@@ -75,11 +72,11 @@ const options = {
 } as any;
 
 const labels = [
-  "valence",
-  "danceability",
-  "energy",
-  "acousticness",
   "speechiness",
+  "acousticness",
+  "energy",
+  "danceability",
+  "valence",
   "liveness",
 ];
 
@@ -100,11 +97,12 @@ const SpotifyRadar: React.FC<{ input: Collection[] | undefined }> = ({
     datasets:
       input != null
         ? input.map((collection) => {
+            const rgb = collection.color;
             return {
               label: `${collection.name} (${collection.data.length})`,
               data: calcAvg(collection.data),
-              // backgroundColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 0.2)`,
-              // borderColor: `rgba(${collection.color[0]}, ${collection.color[1]}, ${collection.color[2]}, 1)`,
+              backgroundColor: `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`,
+              borderColor: `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`,
             };
           })
         : [],

@@ -36,6 +36,7 @@ const options = {
   plugins: {
     autocolors: {
       mode: "dataset",
+      enabled: false,
     },
     title: {
       display: true,
@@ -75,13 +76,10 @@ const options = {
     },
   },
 
+  //set border colors for boxplot
   elements: {
-    boxplot: {
-      outlierRadius: 0,
-    },
-    line: {
-      borderWidth: 3,
-      tension: 0.2,
+    violin: {
+      borderWidth: 2,
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,10 +94,13 @@ const ViolinPlot: React.FC<{
     datasets:
       input != null
         ? input.map((collection) => {
+            const rgb = collection.color;
             return {
               label: `${collection.name} (${collection.data.length})`,
               data: [collection.data.map((data) => data[label])],
               borderWidth: 1,
+              backgroundColor: `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`,
+              borderColor: `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`,
             };
           })
         : [],

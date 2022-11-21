@@ -33,6 +33,15 @@ const Part1: React.FC = () => {
   // const [selected, setSelected] = useState<SpotifyData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const colorPallete = [
+    [255, 99, 132],
+    [54, 162, 235],
+    [255, 206, 86],
+    [75, 192, 192],
+    [153, 102, 255],
+    [255, 159, 64],
+  ];
+
   const addCollection = (
     d: SpotifyData[],
     name: string,
@@ -49,11 +58,9 @@ const Part1: React.FC = () => {
       const id = collection.id ?? (prev.at(-1)?.id ?? -1) + 1;
       const name =
         collection.name === "" ? `Collection_${id}` : collection.name;
-      const color = collection.color ?? [
-        Math.round(95 + Math.random() * 160),
-        Math.round(95 + Math.random() * 160),
-        Math.round(95 + Math.random() * 160),
-      ];
+      const color =
+        collection.color ??
+        (colorPallete[id % colorPallete.length] as [number, number, number]);
       return [
         ...prev,
         {
@@ -71,10 +78,8 @@ const Part1: React.FC = () => {
 
     const avg = rawData;
     const popularg25 = rawData.filter((d) => d.popularity >= 50);
-    const popularl25 = rawData.filter((d) => d.popularity <= 17);
     addCollection(avg, "Average of All Tracks", undefined, undefined);
     addCollection(popularg25, "Popular Top 25%", undefined, undefined);
-    addCollection(popularl25, "Popular Low 25%", undefined, undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData]);
 
