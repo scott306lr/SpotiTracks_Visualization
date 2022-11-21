@@ -2,6 +2,8 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState, useRef } from "react";
 import { Combobox, Listbox, Transition } from "@headlessui/react";
 import { HiCheck, HiChevronUpDown } from "react-icons/hi2";
+import { HiOutlineSearch } from "react-icons/hi";
+
 import fuzzysort from "fuzzysort";
 import type { SpotifyData } from "../utils/dataHandler";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -18,7 +20,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   const [filterkey, setFilterkey] = useState("track_name");
   const filteredData = fuzzysort
     .go(query, data, {
-      threshold: -5,
+      threshold: -10,
       // limit: 10,
       all: true,
       key: filterkey,
@@ -46,7 +48,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
               onChange={(event) => setQuery(event.target.value)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-              <HiChevronUpDown
+              <HiOutlineSearch
                 className="h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
