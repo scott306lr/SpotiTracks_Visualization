@@ -9,7 +9,6 @@
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-
   // assetPrefix: './',
 };
 export default config;
