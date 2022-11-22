@@ -179,7 +179,13 @@ const SpotifyBar: React.FC<{ input: Collection[] }> = ({ input }) => {
 
   // const labels3 = Object.keys(artists);
   // const labels4 = Object.keys(explicit);
-  const labels = ["track_genre", "artists", "explicit", "key/mode"];
+  const labels = [
+    "track_genre",
+    "artists",
+    "album_name",
+    "explicit",
+    "key/mode",
+  ];
   return (
     <div className="flex w-full flex-col justify-center space-y-1 overflow-hidden">
       <Tab.Group>
