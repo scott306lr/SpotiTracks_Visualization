@@ -129,11 +129,11 @@ const DataInfo: React.FC<IProps> = ({
           </ul>
         </div>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="flex w-full items-center justify-center">
         <input
           type="text"
           className="w-full rounded-lg border-2 border-gray-500 p-2"
-          placeholder={"Enter name for new collection"}
+          placeholder={"New collection name..."}
           onChange={(e) => setName(e.target.value)}
           value={name}
         />

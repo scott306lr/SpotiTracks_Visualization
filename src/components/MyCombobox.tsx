@@ -79,7 +79,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                   className="relative h-16 cursor-default select-none bg-teal-700/30 py-2 pl-10 pr-4 text-teal-900 hover:bg-teal-700 hover:text-white"
                   onClick={() => setSelected(filteredData)}
                 >
-                  <span className={`block truncate text-base font-semibold`}>
+                  <span className="block truncate text-base font-semibold hover:font-bold">
                     Select All
                     <p className="font-light">
                       {`Select all ${filteredData.length} tracks`}
@@ -117,7 +117,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                           <>
                             <span
                               className={`block truncate ${
-                                selected ? "font-semibold" : "font-normal"
+                                selected ? "font-bold" : "font-semibold"
                               }`}
                             >
                               {data.track_name}{" "}
