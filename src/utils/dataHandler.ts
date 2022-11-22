@@ -55,7 +55,7 @@ export const getSpotifyDataFn = (url: string) => {
             duration_s: +row.duration_ms / 1000,
             explicit: row.explicit as boolean,
             key: ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"][+row.key] as string,
-            mode: ["major", "minor"][+row.mode] as string,
+            mode: ["minor", "major"][+row.mode] as string,
             tempo: +row.tempo,
             time_signature: +row.time_signature,
             danceability: +row.danceability,

@@ -38,9 +38,9 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   });
 
   return (
-    <div className="flex items-center justify-center align-middle">
+    <div className="flex w-full items-center justify-center align-middle">
       <Combobox value={selected} by="id" onChange={setSelected} multiple>
-        <div className="relative mt-1">
+        <div className="relative mt-1 w-full">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
@@ -127,6 +127,9 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                               <p className="font-light">
                                 Artist: {data.artists.split(";").join(", ")}
                               </p>
+                              <p className="font-light">
+                                Genre: {data.track_genre}
+                              </p>
                               {/* <p className="font-light">Score: {res.score}</p> */}
                             </span>
                             {selected ? (
@@ -171,12 +174,13 @@ type KeyMap = {
 };
 
 const MyListbox: React.FC<IProps2> = ({ selected, setSelected }) => {
-  const keys = ["track_name", "artists", "album_name"];
+  const keys = ["track_name", "artists", "album_name", "track_genre"];
   //[key: string]: string
   const key_map = {
     track_name: "Track",
     artists: "Artist",
     album_name: "Album",
+    track_genre: "Genre",
   } as KeyMap;
 
   return (
