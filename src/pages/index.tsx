@@ -164,9 +164,9 @@ const Home: NextPage = () => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center bg-slate-100">
       <Head>
-        <title>Spotify Data Visualization</title>
-        <meta name="description" content="Spotify Data Visualization" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>SpotiTracks: Spotify Data Visualization</title>
+        <meta name="description" content="SpotiTracks" />
+        <link rel="icon" href="./favicon.ico" />
       </Head>
       <main className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
         <h1 className="text-3xl">Spotify Data Visualization</h1>
